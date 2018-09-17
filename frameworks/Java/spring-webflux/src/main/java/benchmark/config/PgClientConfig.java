@@ -26,7 +26,8 @@ public class PgClientConfig {
         options.setPort(port);
         options.setUser(username);
         options.setPassword(password);
-        options.setMaxSize(Runtime.getRuntime().availableProcessors() * 2);
+        options.setCachePreparedStatements(true);
+        options.setMaxSize(1);
         return PgClient.pool(options);
     }
 
