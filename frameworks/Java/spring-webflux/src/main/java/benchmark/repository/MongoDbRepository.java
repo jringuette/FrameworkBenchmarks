@@ -2,20 +2,14 @@ package benchmark.repository;
 
 import benchmark.model.Fortune;
 import benchmark.model.World;
-import io.reactiverse.pgclient.PgIterator;
-import io.reactiverse.pgclient.PgPool;
-import io.reactiverse.pgclient.Row;
-import io.reactiverse.pgclient.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static java.util.Comparator.comparing;
 import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
