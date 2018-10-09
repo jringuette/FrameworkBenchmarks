@@ -1,12 +1,17 @@
 package benchmark.config;
 
+import benchmark.PgClients;
 import io.reactiverse.pgclient.PgClient;
 import io.reactiverse.pgclient.PgPool;
 import io.reactiverse.pgclient.PgPoolOptions;
+import io.vertx.core.Vertx;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @Profile("pgclient")
@@ -19,7 +24,23 @@ public class PgClientConfig {
     private String password;
 
     @Bean
-    public PgPool pgClient() {
+    public Vertx vertx() {
+        return Vertx.vertx();
+    }
+
+    @Bean
+    public PgClients pgClients(Vertx vertx) {
+        List<PgClient> clients = new ArrayList<>();
+
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+            clients.add(pgClient(vertx));
+        }
+
+        return new PgClients(clients);
+    }
+
+
+    public PgPool pgClient(Vertx vertx) {
         PgPoolOptions options = new PgPoolOptions();
         options.setDatabase(name);
         options.setHost(host);
@@ -28,7 +49,7 @@ public class PgClientConfig {
         options.setPassword(password);
         options.setCachePreparedStatements(true);
         options.setMaxSize(1);
-        return PgClient.pool(options);
+        return PgClient.pool(vertx, options);
     }
 
     public String getName() {

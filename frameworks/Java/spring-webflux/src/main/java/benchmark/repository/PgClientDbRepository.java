@@ -1,9 +1,9 @@
 package benchmark.repository;
 
+import benchmark.PgClients;
 import benchmark.model.Fortune;
 import benchmark.model.World;
 import io.reactiverse.pgclient.PgIterator;
-import io.reactiverse.pgclient.PgPool;
 import io.reactiverse.pgclient.Row;
 import io.reactiverse.pgclient.Tuple;
 import org.slf4j.Logger;
@@ -17,19 +17,16 @@ import reactor.core.publisher.Mono;
 @Profile("pgclient")
 public class PgClientDbRepository implements DbRepository {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final PgPool pgPool;
+    private final PgClients pgClients;
 
-    public PgClientDbRepository(PgPool pgPool) {
-        this.pgPool = pgPool;
+    public PgClientDbRepository(PgClients pgClients) {
+        this.pgClients = pgClients;
     }
 
     @Override
     public Mono<World> getWorld(int id) {
-        log.debug("getWorld({})", id);
-        String sql = "SELECT * FROM world WHERE id = $1";
-
         return Mono.create(sink ->
-                pgPool.preparedQuery(sql, Tuple.of(id), ar -> {
+                pgClients.getOne().preparedQuery("SELECT * FROM world WHERE id = $1", Tuple.of(id), ar -> {
                     if (ar.failed()) {
                         sink.error(ar.cause());
                     } else {
@@ -38,16 +35,13 @@ public class PgClientDbRepository implements DbRepository {
 
                         World world = new World(row.getInteger(0), row.getInteger(1));
                         sink.success(world);
-                        log.debug("New world - id: {}, randomnumber: {}", world.id, world.randomNumber);
                     }
                 }));
     }
 
     private Mono<World> updateWorld(World world) {
-        String sql = "UPDATE world SET randomnumber = $1 WHERE id = $2";
-
         return Mono.create(sink -> {
-            pgPool.preparedQuery(sql, Tuple.of(world.randomNumber, world.id), ar -> {
+            pgClients.getOne().preparedQuery("UPDATE world SET randomnumber = $1 WHERE id = $2", Tuple.of(world.randomNumber, world.id), ar -> {
                 if (ar.failed()) {
                     sink.error(ar.cause());
                 } else {
@@ -67,10 +61,8 @@ public class PgClientDbRepository implements DbRepository {
 
     @Override
     public Flux<Fortune> fortunes() {
-        String sql = "SELECT * FROM fortune";
-
         return Flux.create(sink ->
-                pgPool.preparedQuery(sql, ar -> {
+                pgClients.getOne().preparedQuery("SELECT * FROM fortune", ar -> {
                     if (ar.failed()) {
                         sink.error(ar.cause());
                         return;

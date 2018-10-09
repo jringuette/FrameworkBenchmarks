@@ -62,7 +62,7 @@
       "notes": "",
       "versus": "spring"
     },
-    "postgres": {
+    "jdbc": {
       "db_url": "/db",
       "query_url": "/queries?queries=",
       "fortune_url": "/fortunes",
@@ -79,7 +79,7 @@
       "webserver": "None",
       "os": "Linux",
       "database_os": "Linux",
-      "display_name": "spring-webflux-postgres",
+      "display_name": "spring-webflux-jdbc",
       "notes": "",
       "versus": "spring"
     }
