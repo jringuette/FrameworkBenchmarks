@@ -27,8 +27,7 @@
 
     <properties>
         <helidon.version>0.10.1</helidon.version>
-        <!-- Default package. Will be overriden by Maven archetype -->
-        <package>io.helidon.examples.quickstart.se</package>
+        <package>io.helidon.benchmark</package>
         <mainClass>io.helidon.benchmark.Main</mainClass>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
@@ -138,6 +137,11 @@
                 <version>0.9.5</version>
             </dependency>
             <dependency>
+                <groupId>com.github.davidmoten</groupId>
+                <artifactId>rxjava2-jdbc</artifactId>
+                <version>0.1-RC37</version>
+            </dependency>
+            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.2.5</version>
@@ -176,6 +180,10 @@
         <dependency>
             <groupId>com.github.spullara.mustache.java</groupId>
             <artifactId>compiler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>rxjava2-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

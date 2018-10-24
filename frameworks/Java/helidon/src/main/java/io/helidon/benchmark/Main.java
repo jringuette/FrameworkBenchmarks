@@ -23,15 +23,19 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.helidon.benchmark.models.DbRepository;
 import io.helidon.benchmark.models.JdbcRepository;
+import io.helidon.benchmark.models.RxJdbcRepository;
 import io.helidon.benchmark.services.DbService;
 import io.helidon.benchmark.services.FortuneService;
 import io.helidon.benchmark.services.JsonService;
 import io.helidon.benchmark.services.PlainTextService;
 import io.helidon.config.Config;
+import io.helidon.webserver.ConnectionClosedException;
 import io.helidon.webserver.Routing;
 import io.helidon.webserver.ServerConfiguration;
 import io.helidon.webserver.WebServer;
 import io.reactivex.Scheduler;
+import io.reactivex.exceptions.UndeliverableException;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.sql.DataSource;
@@ -47,7 +51,8 @@ public final class Main {
     /**
      * Cannot be instantiated.
      */
-    private Main() { }
+    private Main() {
+    }
 
     private static Scheduler getScheduler() {
         return Schedulers.from(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2));
@@ -63,10 +68,15 @@ public final class Main {
         return new HikariDataSource(hikariConfig);
     }
 
-    private static DbRepository getRepository(Config config) {
+    private static DbRepository getJdbcRepository(Config config) {
         DataSource dataSource = getDataSource(config.get("dataSource"));
         Scheduler scheduler = getScheduler();
         return new JdbcRepository(dataSource, scheduler);
+    }
+
+    private static DbRepository getRxJdbcRepository(Config config) {
+        DataSource dataSource = getDataSource(config.get("dataSource"));
+        return new RxJdbcRepository(dataSource);
     }
 
     private static Mustache getTemplate() {
@@ -80,22 +90,53 @@ public final class Main {
      * @return the new instance
      */
     private static Routing createRouting(Config config) {
-        DbRepository repository = getRepository(config);
-
-        return Routing.builder()
+        Routing.Builder routingBuilder = Routing.builder()
                 .any((req, res) -> {
                     res.headers().add("Server", "Helidon");
                     req.next();
                 })
                 .register(new JsonService())
-                .register(new PlainTextService())
-                .register(new DbService(repository))
-                .register(new FortuneService(repository, getTemplate()))
-                .build();
+                .register(new PlainTextService());
+
+        if (config.get("profile").hasValue()) {
+            String activeProfile = config.get("profile").asString();
+            DbRepository repository = null;
+
+            if (activeProfile.equals("jdbc")) {
+                repository = getJdbcRepository(config);
+
+
+            } else if (activeProfile.equals("rx-jdbc")) {
+                RxJavaPlugins.setErrorHandler(e -> {
+                    if (e instanceof UndeliverableException) {
+                        e = e.getCause();
+                    }
+                    if (e instanceof NullPointerException && e.getCause() instanceof ConnectionClosedException) {
+                        return;
+                    }
+                    if (e instanceof ConnectionClosedException) {
+                        return;
+                    }
+                    Thread.currentThread().getUncaughtExceptionHandler()
+                            .uncaughtException(Thread.currentThread(), e);
+                    return;
+                });
+                repository = getRxJdbcRepository(config);
+            }
+
+            if (repository != null) {
+                routingBuilder
+                        .register(new DbService(repository))
+                        .register(new FortuneService(repository, getTemplate()));
+            }
+        }
+
+        return routingBuilder.build();
     }
 
     /**
      * Application main entry point.
+     *
      * @param args command line arguments.
      * @throws IOException if there are problems reading logging properties
      */
@@ -105,6 +146,7 @@ public final class Main {
 
     /**
      * Start the server.
+     *
      * @return the created {@link WebServer} instance
      * @throws IOException if there are problems reading logging properties
      */
@@ -124,13 +166,10 @@ public final class Main {
         WebServer server = WebServer.create(serverConfig, createRouting(config));
 
         // Start the server and print some info.
-        server.start().thenAccept(ws -> {
-            System.out.println("WEB server is up! http://localhost:" + ws.port());
-        });
+        server.start().thenAccept(ws -> System.out.println("WEB server is up! http://localhost:" + ws.port()));
 
         // Server threads are not demon. NO need to block. Just react.
-        server.whenShutdown().thenRun(()
-                -> System.out.println("WEB server is DOWN. Good bye!"));
+        server.whenShutdown().thenRun(() -> System.out.println("WEB server is DOWN. Good bye!"));
 
         return server;
     }

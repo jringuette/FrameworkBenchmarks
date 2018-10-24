@@ -20,8 +20,8 @@ import javax.json.JsonStructure;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -80,13 +80,13 @@ public class DbService implements Service {
 
     private Single<DataChunk> marshall(Flowable<JsonObject>[] worlds) {
         return Flowable.mergeArray(worlds)
-                .collect(() -> new ArrayList<JsonObject>(), (worlds1, world) -> worlds1.add(world))
+                .toList()
                 .map(jsonObjects -> buildArray(jsonObjects))
                 .map(jsonValues -> getChunk(jsonValues))
                 .doOnError(Throwable::printStackTrace);
     }
 
-    private JsonArray buildArray(ArrayList<JsonObject> jsonObjects) {
+    private JsonArray buildArray(List<JsonObject> jsonObjects) {
         return jsonObjects.stream().reduce(
                 Json.createArrayBuilder(),
                 (jsonArrayBuilder, jsonObject) -> jsonArrayBuilder.add(jsonObject),

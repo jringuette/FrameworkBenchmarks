@@ -5,6 +5,25 @@
       "default": {
         "json_url": "/json",
         "plaintext_url": "/plaintext",
+        "port": 8080,
+        "approach": "Realistic",
+        "classification": "Micro",
+        "database": "None",
+        "framework": "Helidon",
+        "language": "Java",
+        "flavor": "None",
+        "orm": "Raw",
+        "platform": "Netty",
+        "webserver": "None",
+        "os": "Linux",
+        "database_os": "Linux",
+        "display_name": "Helidon",
+        "notes": "",
+        "versus": "Netty"
+      }
+    },
+    {
+      "jdbc": {
         "db_url": "/db",
         "query_url": "/queries?queries=",
         "update_url": "/updates?queries=",
@@ -21,7 +40,30 @@
         "webserver": "None",
         "os": "Linux",
         "database_os": "Linux",
-        "display_name": "Helidon",
+        "display_name": "Helidon-jdbc",
+        "notes": "",
+        "versus": "Netty"
+      }
+    },
+    {
+      "rx-jdbc": {
+        "db_url": "/db",
+        "query_url": "/queries?queries=",
+        "update_url": "/updates?queries=",
+        "fortune_url": "/fortunes",
+        "port": 8080,
+        "approach": "Realistic",
+        "classification": "Micro",
+        "database": "Postgres",
+        "framework": "Helidon",
+        "language": "Java",
+        "flavor": "None",
+        "orm": "Raw",
+        "platform": "Netty",
+        "webserver": "None",
+        "os": "Linux",
+        "database_os": "Linux",
+        "display_name": "Helidon-rx-jdbc",
         "notes": "",
         "versus": "Netty"
       }
