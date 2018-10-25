@@ -32,6 +32,7 @@ public class JdbcRepository implements DbRepository {
                     return world;
             }
         }).subscribeOn(this.scheduler);
+//                .doOnSubscribe(disposable -> System.out.println("database subscribing on " + Thread.currentThread().getName()));
     }
 
     @Override

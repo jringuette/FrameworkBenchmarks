@@ -75,8 +75,9 @@ public final class Main {
     }
 
     private static DbRepository getRxJdbcRepository(Config config) {
-        DataSource dataSource = getDataSource(config.get("dataSource"));
-        return new RxJdbcRepository(dataSource);
+        /*DataSource dataSource = getDataSource(config.get("dataSource"));
+        return new RxJdbcRepository(dataSource);*/
+        return new RxJdbcRepository(config.get("dataSource"));
     }
 
     private static Mustache getTemplate() {

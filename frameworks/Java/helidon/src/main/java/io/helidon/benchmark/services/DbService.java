@@ -47,7 +47,9 @@ public class DbService implements Service {
                           final ServerResponse response) {
         Single<DataChunk> result = repository.getWorld(randomWorldNumber())
                 .map(World::toJson)
+//                .doOnSuccess(jsonObject -> System.out.println("tojson completed on " + Thread.currentThread().getName()))
                 .map(jsonObject -> getChunk(jsonObject));
+//                .doOnSuccess(jsonObject -> System.out.println("getchunk completed on " + Thread.currentThread().getName()));
 
         send(response, result);
     }
