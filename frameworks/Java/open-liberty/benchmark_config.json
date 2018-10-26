@@ -1,0 +1,26 @@
+{
+  "framework": "open-liberty",
+  "tests": [
+    {
+      "default": {
+        "json_url": "/json",
+        "plaintext_url": "/plaintext",
+        "port": 9080,
+        "approach": "Realistic",
+        "classification": "Fullstack",
+        "database": "Postgres",
+        "framework": "Open Liberty",
+        "language": "Java",
+        "flavor": "None",
+        "orm": "Raw",
+        "platform": "WebSphere",
+        "webserver": "None",
+        "os": "Linux",
+        "database_os": "Linux",
+        "display_name": "Open Liberty",
+        "notes": "",
+        "versus": "None"
+      }
+    }
+  ]
+}
