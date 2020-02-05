@@ -23,6 +23,27 @@
       }
     },
     {
+      "native": {
+        "json_url": "/json",
+        "plaintext_url": "/plaintext",
+        "port": 8080,
+        "approach": "Realistic",
+        "classification": "fullstack",
+        "database": "Postgres",
+        "framework": "Quarkus",
+        "language": "Java",
+        "flavor": "None",
+        "orm": "full",
+        "platform": "JAX-RS",
+        "webserver": "None",
+        "os": "Linux",
+        "database_os": "Linux",
+        "display_name": "quarkus-native",
+        "notes": "",
+        "versus": "Netty"
+      }
+    },
+    {
       "hibernate": {
         "db_url": "/hibernate/db",
         "query_url": "/hibernate/queries?queries=",
@@ -40,6 +61,29 @@
         "os": "Linux",
         "database_os": "Linux",
         "display_name": "quarkus-hibernate",
+        "notes": "",
+        "versus": "Netty"
+      }
+    },
+    {
+      "hibernate-native": {
+        "db_url": "/hibernate/db",
+        "query_url": "/hibernate/queries?queries=",
+        "update_url": "/hibernate/updates?queries=",
+        "fortune_url": "/hibernate/fortunes",
+        "port": 8080,
+        "approach": "Realistic",
+        "classification": "fullstack",
+        "database": "Postgres",
+        "framework": "Quarkus",
+        "language": "Java",
+        "flavor": "None",
+        "orm": "full",
+        "platform": "JAX-RS",
+        "webserver": "None",
+        "os": "Linux",
+        "database_os": "Linux",
+        "display_name": "quarkus-hibernate-native",
         "notes": "",
         "versus": "Netty"
       }
