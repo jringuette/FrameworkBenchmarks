@@ -1,7 +1,6 @@
 package handlers;
 
 import models.DbRepository;
-import models.JdbcRepository;
 import ratpack.handling.Context;
 
 import static ratpack.jackson.Jackson.json;

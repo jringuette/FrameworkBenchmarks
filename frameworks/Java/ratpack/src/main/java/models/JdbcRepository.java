@@ -55,13 +55,13 @@ public class JdbcRepository implements DbRepository {
             return Blocking.get(() -> {
                 try (Connection connection = dataSource.getConnection()) {
                     int i = 0;
-                    for(World world: worlds) {
-                        PreparedStatement statement = connection.prepareStatement("UPDATE world SET randomnumber = ? WHERE id = ?");
-                        world.randomNumber = randomNumbers[i++];
-                        statement.setInt(1, world.randomNumber);
-                        statement.setInt(2, world.id);
-                        statement.executeUpdate();
-                        statement.close();
+                    for (World world: worlds) {
+                        try (PreparedStatement statement = connection.prepareStatement("UPDATE world SET randomnumber = ? WHERE id = ?")) {
+                            world.randomNumber = randomNumbers[i++];
+                            statement.setInt(1, world.randomNumber);
+                            statement.setInt(2, world.id);
+                            statement.executeUpdate();
+                        }
                     }
                     return worlds;
                 }
