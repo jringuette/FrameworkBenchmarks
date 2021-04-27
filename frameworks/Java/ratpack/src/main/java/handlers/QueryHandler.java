@@ -1,14 +1,8 @@
 package handlers;
 
 import models.DbRepository;
-import models.JdbcRepository;
-import models.World;
-import ratpack.exec.Blocking;
 import ratpack.handling.Context;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.util.Arrays;
 
 import static ratpack.jackson.Jackson.json;
 

@@ -24,7 +24,7 @@ public class HeaderHandler implements Handler {
     }
 
     static class DateHelper extends TimerTask {
-        private Timer timer = new Timer();
+        private final Timer timer = new Timer();
         private String date = generateDate();
 
         public DateHelper() {

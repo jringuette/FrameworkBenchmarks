@@ -3,11 +3,8 @@ package module;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import io.reactiverse.rxjava.pgclient.PgClient;
-import models.JdbcRepository;
 import models.PgClientRepository;
 
-import javax.sql.DataSource;
 
 public class PgClientRepositoryModule extends AbstractModule {
     @Provides

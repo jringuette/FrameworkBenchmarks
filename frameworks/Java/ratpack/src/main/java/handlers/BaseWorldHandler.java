@@ -1,13 +1,8 @@
 package handlers;
 
-import models.World;
 import ratpack.handling.Context;
 import ratpack.handling.InjectionHandler;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 

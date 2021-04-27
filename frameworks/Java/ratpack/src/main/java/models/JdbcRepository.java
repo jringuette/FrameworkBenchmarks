@@ -31,12 +31,13 @@ public class JdbcRepository implements DbRepository {
             try (Connection connection = dataSource.getConnection()) {
                 Arrays.setAll(worlds, value -> {
                     try {
-                        PreparedStatement statement = connection.prepareStatement("SELECT id, randomnumber FROM world WHERE id = ?");
-                        statement.setInt(1, ids[value]);
-                        ResultSet rs = statement.executeQuery();
-                        rs.next();
-                        World world = new World(rs.getInt(1), rs.getInt(2));
-                        statement.close();
+                        World world;
+                        try (PreparedStatement statement = connection.prepareStatement("SELECT id, randomnumber FROM world WHERE id = ?")) {
+                            statement.setInt(1, ids[value]);
+                            ResultSet rs = statement.executeQuery();
+                            rs.next();
+                            world = new World(rs.getInt(1), rs.getInt(2));
+                        }
                         return world;
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -71,15 +72,13 @@ public class JdbcRepository implements DbRepository {
     @Override
     public Promise<List<Fortune>> fortunes() {
         return Blocking.get(() -> {
-            try (Connection connection = dataSource.getConnection()) {
-                PreparedStatement statement = connection.prepareStatement("SELECT id, message FROM fortune");
+            try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT id, message FROM fortune")) {
                 ResultSet rs = statement.executeQuery();
 
                 List<Fortune> fortunes = new ArrayList<>();
                 while (rs.next()) {
                     fortunes.add(new Fortune(rs.getInt(1), rs.getString(2)));
                 }
-                statement.close();
                 return fortunes;
             }
         });
